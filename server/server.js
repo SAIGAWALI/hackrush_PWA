@@ -7,25 +7,29 @@ require('dotenv').config();
 
 const app = express();
 
-// CORS Configuration - Whitelist allowed origins
-const allowedOrigins = process.env.CORS_ORIGIN 
+const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',')
-  : ['http://localhost:5173', 'http://localhost:3000'];
+  : [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'https://bazaar-iitgn.netlify.app'
+    ];
 
 app.use(cors({
-  origin: function(origin, callback) {
-    if (
-  !origin ||
-  allowedOrigins.some(o => origin.startsWith(o))
-) {
-  callback(null, true);
-} else {
-  callback(new Error('Not allowed by CORS'));
-}
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
+
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.log("❌ Blocked by CORS:", origin);
+      callback(new Error('Not allowed by CORS'));
+    }
   },
   credentials: true
 }));
-
 app.use(express.json());
 
 // Environment Configuration
@@ -586,8 +590,14 @@ app.post('/api/conversations/:roomId/read', async (req, res) => {
 // =========================================
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: ['http://localhost:5173',"https://bazaar-iitgn.netlify.app"], methods: ['GET', 'POST'] },
-  maxHttpBufferSize: 5 * 1024 * 1024  // 5MB for large image base64 strings
+  cors: {
+    origin: [
+      "http://localhost:5173",
+      "https://bazaar-iitgn.netlify.app"
+    ],
+    methods: ["GET", "POST"]
+  },
+  maxHttpBufferSize: 5 * 1024 * 1024
 });
 
 const onlineUsers = {}; // email → socket.id
