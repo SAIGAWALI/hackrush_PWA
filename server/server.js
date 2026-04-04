@@ -14,11 +14,14 @@ const allowedOrigins = process.env.CORS_ORIGIN
 
 app.use(cors({
   origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+    if (
+  !origin ||
+  allowedOrigins.some(o => origin.startsWith(o))
+) {
+  callback(null, true);
+} else {
+  callback(new Error('Not allowed by CORS'));
+}
   },
   credentials: true
 }));
@@ -583,7 +586,7 @@ app.post('/api/conversations/:roomId/read', async (req, res) => {
 // =========================================
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: ['http://localhost:5173', 'http://localhost:3000'], methods: ['GET', 'POST'] },
+  cors: { origin: ['http://localhost:5173',"https://bazaar-iitgn.netlify.app"], methods: ['GET', 'POST'] },
   maxHttpBufferSize: 5 * 1024 * 1024  // 5MB for large image base64 strings
 });
 
