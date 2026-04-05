@@ -3,6 +3,8 @@
 > A real-time peer-to-peer marketplace exclusively for IITGN students (@iitgn.ac.in email verification required).
 
 **Status:** Production-ready | Security-hardened | Mobile-optimized
+---
+**website link:** https://bazaar-iitgn.netlify.app/
 
 ---
 
