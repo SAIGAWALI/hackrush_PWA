@@ -59,13 +59,20 @@ function App() {
 
           // Register with socket server (for inbox notifications)
           const socket = getSocket();
+
+          socket.on("connect", () => {
+          console.log("🟢 Connected:", socket.id);
+
+          // 🔥 register AFTER connection
           socket.emit('register', currentUser.email);
+});
 
-          // Listen for inbox updates to bump badge
+          // prevent duplicate listeners
+          socket.off('inbox_update');
+
           socket.on('inbox_update', () => {
-            setUnreadCount(prev => prev + 1);
+          setUnreadCount(prev => prev + 1);
           });
-
           // Fetch initial unread count
           try {
             const res = await fetch(`${API_URL}/api/conversations/unread-count?email=${encodeURIComponent(currentUser.email)}`);
