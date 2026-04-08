@@ -7,7 +7,7 @@ let socket = null;
 export const getSocket = () => {
   if (!socket) {
     socket = io(API_URL, {
-      transports: ["websocket"],   // 🔥 CRITICAL for mobile
+      transports: ["websocket","polling"],   // 🔥 CRITICAL for mobile
       autoConnect: true,
       reconnection: true,
       reconnectionAttempts: 5,
